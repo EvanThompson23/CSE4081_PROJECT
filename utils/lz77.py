@@ -110,9 +110,9 @@ def lzDecode(file):
     #print(decode_string)
     bit_array = create_bit_array(decode_string.split(","), row_num)
 
-    #print(bit_array)
+    return bit_array
 
-    conversion.array_to_image(bit_array, "")
+    #print(bit_array)
         
 
 def create_bit_string(bit_stream):
