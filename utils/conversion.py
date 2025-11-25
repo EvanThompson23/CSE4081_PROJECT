@@ -10,6 +10,6 @@ def image_to_array(path):
 
 def array_to_image(arr, path):
     img = Image.fromarray(arr.astype("uint8"), "RGBA")
-    img.save(path)
+    img.save("imgtest.png")
 
 
