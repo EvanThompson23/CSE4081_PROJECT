@@ -13,10 +13,8 @@ def find_offset(search_buffer_list, term):
     return offset + 1
 
 
-def lzComp(path):
-    bit_stream = conversion.image_to_array(path)
-
-    bit_stream, row_num = create_bit_string(bit_stream)
+def lzComp(image_array):
+    bit_stream, row_num = create_bit_string(image_array)
 
     search_buffer = math.floor(row_num/2)
     look_buffer = math.floor(row_num/2)
