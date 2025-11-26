@@ -63,12 +63,12 @@ def lzComp(image_array):
 
         count += 1
         
-    file_name = "encoded_LZ77.txt"
+    file_name = "encoded_LZ77.enc"
 
     with open(file_name, "w") as output:
-        output.write(f"row_num={row_num}")
+        output.write(f"{row_num} ")
         for tup in encode:
-            output.write(str(tup))
+            output.write(f"{str(tup[0])} {str(tup[1])} {str(tup[2]).strip("'")} ")
 
 
 def lzDecode(file):
@@ -76,19 +76,14 @@ def lzDecode(file):
 
     f = open(file)
     input_expr = f.read()
-    input_expr = input_expr[input_expr.index("=")+1:]
+    input_expr = input_expr.split()
 
-    row_num = int(input_expr[:input_expr.index("(")])
+    row_num = int(input_expr[0])
 
-    input_expr = input_expr[input_expr.index("(") + 1:]
-    input_expr = input_expr.split(")")
-
-    for tup in input_expr[:len(input_expr) - 1]:
-        tup = tup.split(" ")
-        offset, length, term = int(tup[0].strip("(, ")), int(tup[1].strip(", ")), tup[2]
+    for i in range(1, len(input_expr)-5, 3):
+        offset, length, term = int(input_expr[i]), int(input_expr[i+1]), input_expr[i+2]
 
         if term != "":
-            term = term.strip("' ")
 
             if offset != 0 and length != 0:
                 starting_index = len(decode_string) - offset
@@ -107,6 +102,8 @@ def lzDecode(file):
 
     #print(decode_string)
     bit_array = create_bit_array(decode_string.split(","), row_num)
+
+    conversion.array_to_image(bit_array, "fill")
 
     return bit_array
 
@@ -137,8 +134,9 @@ def create_bit_array(bit_string, row_num):
     row_holder = []
     temp_holder = []
 
-    for bit in bit_string:    
+    for bit in bit_string:
         insert_bit = np.uint8(int(bit))
+
         temp_holder.append(insert_bit)
 
         if len(temp_holder) == 4:
@@ -154,11 +152,13 @@ def create_bit_array(bit_string, row_num):
 
 if __name__ == "__main__":
 
-    path_to_file = "C:/Users/sothi/Pictures/GTNYTNsWoAAGeXm.jpg"
+    path_to_file = "C:/Users/sothi/Pictures/ebx3u9ub1yq51.png"
 
-    lzComp(path_to_file)
+    image_array = conversion.image_to_array(path_to_file)
 
-    lzDecode("encoded_LZ77.txt")
+    lzComp(image_array)
+
+    lzDecode("encoded_LZ77.enc")
 
     #bit_stream = conversion.image_to_array(path_to_file)
 
