@@ -156,7 +156,7 @@ def color_cache(image_array):
                 stream.append(('MISS', (r, g, b, a)))
                 cache[h] = (r, g, b, a)
 
-    return stream
+    return stream, height, width
 
 
 # decompress

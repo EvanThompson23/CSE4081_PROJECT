@@ -1,4 +1,4 @@
-import conversion
+from  utils import conversion
 import numpy as np
 import math
 
@@ -18,6 +18,21 @@ def lzComp(image_array):
 
     search_buffer = math.floor(row_num/2)
     look_buffer = math.floor(row_num/2)
+
+    encoded = lz77(bit_stream, search_buffer, look_buffer)
+
+    file_name = "encoded_LZ77.enc"
+
+    with open(file_name, "w") as output:
+        output.write(f"{row_num} ")
+        for tup in encoded:
+            output.write(f"{str(tup[0])} {str(tup[1])} {str(tup[2]).strip("'")} ")
+
+
+
+
+def lz77(raw_text, search_buffer, look_buffer):
+    bit_stream = raw_text
     
     encode = [(0 ,0 ,bit_stream[0])]
     count = 1
@@ -63,12 +78,7 @@ def lzComp(image_array):
 
         count += 1
         
-    file_name = "encoded_LZ77.enc"
-
-    with open(file_name, "w") as output:
-        output.write(f"{row_num} ")
-        for tup in encode:
-            output.write(f"{str(tup[0])} {str(tup[1])} {str(tup[2]).strip("'")} ")
+    return encode
 
 
 def lzDecode(file):
@@ -103,8 +113,6 @@ def lzDecode(file):
     #print(decode_string)
     bit_array = create_bit_array(decode_string.split(","), row_num)
 
-    conversion.array_to_image(bit_array, "fill")
-
     return bit_array
 
     #print(bit_array)
@@ -135,7 +143,8 @@ def create_bit_array(bit_string, row_num):
     temp_holder = []
 
     for bit in bit_string:
-        insert_bit = np.uint8(int(bit))
+        if bit != "":
+            insert_bit = np.int32(int(bit))
 
         temp_holder.append(insert_bit)
 
@@ -151,8 +160,7 @@ def create_bit_array(bit_string, row_num):
         
 
 if __name__ == "__main__":
-
-    path_to_file = "C:/Users/sothi/Pictures/ebx3u9ub1yq51.png"
+    path_to_file = "C:/Users/sothi/Pictures/cabin.png"
 
     image_array = conversion.image_to_array(path_to_file)
 
