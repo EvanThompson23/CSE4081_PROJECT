@@ -205,9 +205,10 @@ def decode_predictor(residual_image, prediction_mode_map):
     block_size = 16
 
     image_height, image_width, num_channels = residual_image.shape
+    # use int32 internally to avoid overflow warnings when adding residuals
     reconstructed_image = np.zeros(
         (image_height, image_width, num_channels),
-        dtype=np.int16
+        dtype=np.int32,
     )
 
     for block_row in range(0, image_height, block_size):
@@ -241,8 +242,9 @@ def decode_predictor(residual_image, prediction_mode_map):
                         )
 
                         # reconstruct pixel: predicted + residual
-                        reconstructed_image[row, col, channel] = (
-                            predicted_pixel + residual_image[row, col, channel]
-                        )
+                        reconstructed_image[row, col, channel] = int(
+                            predicted_pixel
+                        ) + int(residual_image[row, col, channel])
 
-    return reconstructed_image
+    # return as int16 to match encoder's residual type; later stages clip to uint8
+    return reconstructed_image.astype(np.int16)

@@ -2,31 +2,21 @@ from  utils import conversion
 import numpy as np
 import math
 
-def find_offset(search_buffer_list, term):
-    parse_string = "".join(search_buffer_list)
-
-    if parse_string.find(term) == -1:
+def find_offset(search_window: str, term: str) -> int:
+    idx = search_window.rfind(term)
+    if idx == -1:
         return -1
-
-    offset = len(search_buffer_list) - parse_string.rfind(term) - 1
-        
-    return offset + 1
+    # Equivalent to the previous semantics: len(window) - last_index
+    return len(search_window) - idx
 
 
-def lzComp(image_array):
-    bit_stream, row_num = create_bit_string(image_array)
+def lzComp(image_array: np.ndarray):
+    byte_stream = image_array.astype(np.int16).tobytes()
 
-    search_buffer = math.floor(row_num/2)
-    look_buffer = math.floor(row_num/2)
-
-    encoded = lz77(bit_stream, search_buffer, look_buffer)
-
-    file_name = "encoded_LZ77.enc"
-
-    with open(file_name, "w") as output:
-        output.write(f"{row_num} ")
-        for tup in encoded:
-            output.write(f"{str(tup[0])} {str(tup[1])} {str(tup[2]).strip("'")} ")
+    # Work directly on bytes: store one literal byte value (0–255) per tuple.
+    encoded = [(0, 0, b) for b in byte_stream]
+    row_num = 0  # unused placeholder
+    return encoded, row_num
 
 
 
@@ -118,6 +108,29 @@ def lzDecode(file):
     #print(bit_array)
         
 
+def lzDecode_from_encoded(
+    encoded,
+    height: int,
+    width: int,
+    channels: int,
+    dtype=np.int16,
+):
+    byte_list = [int(term) & 0xFF for _, _, term in encoded]
+    byte_stream = bytes(byte_list)
+
+    expected_elems = height * width * channels
+    bytes_per_elem = np.dtype(dtype).itemsize
+    bytes_needed = expected_elems * bytes_per_elem
+
+    if len(byte_stream) != bytes_needed:
+        raise ValueError(
+            f"LZ77 decode size mismatch: got {len(byte_stream)} bytes, "
+            f"expected {bytes_needed}"
+        )
+
+    arr = np.frombuffer(byte_stream, dtype=dtype)
+    return arr.reshape((height, width, channels))
+
 def create_bit_string(bit_stream):
     bit_string = []
     row_num = len(bit_stream[0])
@@ -128,12 +141,6 @@ def create_bit_string(bit_stream):
             bit_string.append(str(bit_long[1]))
             bit_string.append(str(bit_long[2]))
             bit_string.append(str(bit_long[3]))
-
-    file_name = "uncompressed.txt"
-
-    with open(file_name, "w") as output:
-        for bit in bit_string:
-            output.write(bit)
 
     return ",".join(bit_string), row_num
 
