@@ -2,7 +2,7 @@ How to install:
 
 Step one: download and unzip.
 
-Step two: ```pip install -r requirments.txt```
+Step two: ```pip3 install -r requirments.txt```
 
 Step three: ```python3 compress.py <image_name.png>```
 
