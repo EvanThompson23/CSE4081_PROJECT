@@ -5,10 +5,7 @@ import sys
 
 
 def verify_lossless(original_path: str = "1.png", reconstructed_path: str = "decompressed.png") -> None:
-    """
-    Load the original PNG and the decompressed PNG, and verify that
-    the codec is lossless by comparing pixel arrays.
-    """
+
     if not os.path.exists(original_path):
         print(f"Original file not found: {original_path}")
         return
