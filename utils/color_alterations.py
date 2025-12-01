@@ -101,7 +101,7 @@ def palette(image_array):
     if num_unique > max_palette_size:
         return None, None
 
-    palette = np.asarray([np.frombuffer(v.tobytes(), dtype=flat.dtype) for v in unique_view], dtype.npuint8)
+    palette = np.asarray([np.frombuffer(v.tobytes(), dtype=flat.dtype) for v in unique_view], dtype=np.uint8)
     indices = inv.reshape(height, width)
 
     if num_unique <= 256:
