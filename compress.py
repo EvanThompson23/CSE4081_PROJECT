@@ -4,10 +4,16 @@ from utils import predictor
 from utils import lz77
 import numpy as np
 import os
+import sys
 
 
-if __name__ == "__main__":
-    input_path = "1.png"
+def main():
+    # Use first CLI arg as input path if provided, else default to "1.png"
+    if len(sys.argv) > 1:
+        input_path = sys.argv[1]
+    else:
+        input_path = "1.png"
+
     image_array = conversion.image_to_array(input_path)
 
     AR = 0
@@ -60,6 +66,11 @@ if __name__ == "__main__":
     else:
         compression_ratio = float("inf")
 
+    print(f"Input image: {input_path}")
     print(f"Raw RGBA pixel data (in memory): {raw_pixel_size} bytes")
     print(f"Compressed container (compressed.npz): {compressed_size} bytes")
     print(f"Compression ratio (raw_pixels / compressed): {compression_ratio:.2f}")
+
+
+if __name__ == "__main__":
+    main()

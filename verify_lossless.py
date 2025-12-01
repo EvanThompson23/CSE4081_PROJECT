@@ -1,6 +1,7 @@
 from utils import conversion
 import numpy as np
 import os
+import sys
 
 
 def verify_lossless(original_path: str = "1.png", reconstructed_path: str = "decompressed.png") -> None:
@@ -37,7 +38,22 @@ def verify_lossless(original_path: str = "1.png", reconstructed_path: str = "dec
         print("Result: The codec is NOT perfectly lossless for this image.")
 
 
+def main():
+    # sys.argv[1] = original image (optional), sys.argv[2] = reconstructed image (optional)
+    if len(sys.argv) > 1:
+        original_path = sys.argv[1]
+    else:
+        original_path = "1.png"
+
+    if len(sys.argv) > 2:
+        reconstructed_path = sys.argv[2]
+    else:
+        reconstructed_path = "decompressed.png"
+
+    verify_lossless(original_path, reconstructed_path)
+
+
 if __name__ == "__main__":
-    verify_lossless()
+    main()
 
 
