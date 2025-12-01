@@ -8,7 +8,7 @@ import sys
 
 
 def main():
-    # Use first CLI arg as input path if provided, else default to "1.png"
+
     if len(sys.argv) > 1:
         input_path = sys.argv[1]
     else:
